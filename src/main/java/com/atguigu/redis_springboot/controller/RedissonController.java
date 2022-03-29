@@ -22,7 +22,7 @@ public class RedissonController {
 
 
     @ResponseBody
-    @GetMapping(value = "/lock/v4")
+    @GetMapping(value = "/lock")
     public String hello() {
 
         //1、获取一把锁，只要锁的名字一样，就是同一把锁

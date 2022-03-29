@@ -1,7 +1,7 @@
 spring:
   redis:
     database: 0 #Redis数据库索引（默认为0）
-    host: 192.168.44.168 #Redis服务器地址
+    host: 127.0.0.1 #Redis服务器地址
     port: 6379 #Redis服务器连接端口
     timeout: 1800000 #连接超时时间（毫秒）
     jedis:
@@ -11,3 +11,14 @@ spring:
         max-idle: 5 #连接池中的最大空闲连接
         min-idle: 0 #连接池中的最小空闲连接
 
+zookeeper:
+  #每次重试时间间隔，单位毫秒
+  baseSleepTimeMs: 1000
+  #重试次数
+  maxRetries: 3
+  #zookeeper服务连接id与端口
+  connectString: 127.0.0.1:2181
+  #会话超时时间，单位毫秒
+  sessionTimeoutMs: 5000
+  #连接创建超时时间，单位毫秒
+  connection-timeout-ms: 5000

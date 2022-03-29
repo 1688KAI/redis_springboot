@@ -39,7 +39,7 @@ public class RedissonConfig {
         //1、创建配置
         Config config = new Config();
         config.useSingleServer().setAddress("redis://"+host+":6379")
-                .setPassword(password)
+//                .setPassword(password)
                 .setDatabase(database)
                 .setTimeout(1000)
                 .setRetryAttempts(3)
