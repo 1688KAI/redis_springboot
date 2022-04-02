@@ -1,6 +1,8 @@
 package com.atguigu.redis_springboot.util;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
+import org.apache.commons.lang.StringUtils;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,6 @@ public class ZookeeperDistributedLock {
     //当前线程创建的序列node
     private ThreadLocal<String> nodeId = new ThreadLocal<>();
     //用来同步等待zkclient链接到了服务端
-    private CountDownLatch connectedSignal = new CountDownLatch(1);
     private final static int sessionTimeout = 3000;
     private final static byte[] data = new byte[0];
 
@@ -173,6 +174,19 @@ public class ZookeeperDistributedLock {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public void unlock(String key) {
+        try {
+//            System.out.println(j.join(Thread.currentThread().getName(), nodeId.get(), "unlock "));
+            if (StringUtils.isNotBlank(key)) {
+                zk.delete(key, -1);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (KeeperException e) {
+            e.printStackTrace();
+        }
     }
 
 }

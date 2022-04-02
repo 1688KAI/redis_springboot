@@ -7,15 +7,20 @@ import org.apache.zookeeper.ZooKeeper;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
 @Configuration
 public class ZooKeeperConfig {
 
-    private String zkQurom = "localhost:2181";
+    @Value("${zookeeper.connectString}")
+    private String zkQurom;
+
+    private CountDownLatch connectedSignal = new CountDownLatch(1);
 
     @Bean("zooKeeper")
     public ZooKeeper zooKeeperClient() throws IOException {
@@ -24,8 +29,12 @@ public class ZooKeeperConfig {
             @Override
             public void process(WatchedEvent watchedEvent) {
                 System.out.println("Receive event " + watchedEvent);
-                if (Event.KeeperState.SyncConnected == watchedEvent.getState())
+                if (Event.KeeperState.SyncConnected == watchedEvent.getState()){
                     System.out.println("connection is established...");
+                }
+                if (watchedEvent.getState() == Event.KeeperState.SyncConnected) {
+                    connectedSignal.countDown();
+                }
             }
         });
     }
