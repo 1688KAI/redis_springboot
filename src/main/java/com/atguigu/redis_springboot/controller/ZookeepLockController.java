@@ -1,8 +1,6 @@
 package com.atguigu.redis_springboot.controller;
 
-import com.atguigu.redis_springboot.config.ZkLockUtil;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
+import com.atguigu.redis_springboot.util.ZookeeperDistributedLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-
 @RestController
 @RequestMapping("/testZK")
 public class ZookeepLockController {
@@ -22,14 +17,13 @@ public class ZookeepLockController {
     private static final Logger log = LoggerFactory.getLogger(ZookeepLockController.class);
 
     @Autowired
-    ZkLockUtil zkLockUtil;
-
-    @Autowired
     StringRedisTemplate stringRedisTemplate;
 
     public static final String STOCK_KEY = "stock";
     public static final String LOCK_KEY = "lock";
 
+    @Autowired
+    ZookeeperDistributedLock zookeeperDistributedLock;
 
     /**
      * 第一个版本 不控制并发情况
@@ -42,7 +36,7 @@ public class ZookeepLockController {
     @GetMapping(value = "/lock/v1")
     public String v1() {
         try {
-            zkLockUtil.lock();
+            zookeeperDistributedLock.lock(LOCK_KEY);
             String value = stringRedisTemplate.opsForValue().get(STOCK_KEY);
             Integer stock = Integer.valueOf(value);
             if (stock > 0) {
@@ -51,7 +45,7 @@ public class ZookeepLockController {
             }
         } catch (Exception e) {
         } finally {
-            zkLockUtil.unlock();
+            zookeeperDistributedLock.unlock();
         }
         return "hello";
     }

@@ -163,7 +163,6 @@ public class RedisLockController {
     @ResponseBody
     @GetMapping(value = "/lock/v5")
     public String v5() {
-
         //1、获取一把锁，只要锁的名字一样，就是同一把锁
         RLock myLock = redissonClient.getLock("my-lock");
 
