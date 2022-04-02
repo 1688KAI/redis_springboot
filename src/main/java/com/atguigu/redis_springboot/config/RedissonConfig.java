@@ -38,7 +38,7 @@ public class RedissonConfig {
     @Value("${spring.redis.sentinel.nodes}")
     List<String> sentinelNodes;
 
-    @Value("${spring.redis.sentinel.nodes}")
+    @Value("${spring.redis.cluster.nodes}")
     List<String> clusterNodes;
     /**
      * Redisson单机配置
