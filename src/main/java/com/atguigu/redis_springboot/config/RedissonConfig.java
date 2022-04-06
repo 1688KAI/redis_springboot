@@ -9,7 +9,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +42,7 @@ public class RedissonConfig {
 
     @Value("${spring.redis.cluster.nodes}")
     List<String> clusterNodes;
+
     /**
      * Redisson单机配置
      *
@@ -51,7 +54,7 @@ public class RedissonConfig {
     public RedissonClient SetRedissonClientStandAlone() throws IOException {
         //1、创建配置
         Config config = new Config();
-        config.useSingleServer().setAddress(setPrefix(host + port))
+        config.useSingleServer().setAddress(setPrefix(host +":"+ port))
                 .setDatabase(database)
                 .setTimeout(1000)
                 .setRetryAttempts(3)
@@ -65,6 +68,7 @@ public class RedissonConfig {
 
     /**
      * 设置前缀
+     *
      * @param node
      * @return
      */
@@ -129,5 +133,39 @@ public class RedissonConfig {
 
     }
 
+    public static void main(String[] args) {
+        List<Integer> arrayList = new ArrayList<>(1000000);
+        long timeMillis = System.currentTimeMillis();
+        int arr[] = new int[1000000];
 
+//        System.out.println(Arrays.toString(arr));
+        System.out.println("arrayList   startTime        " + timeMillis);
+        for (int i = 0; i < 1000000; i++) {
+            arrayList.add(i);
+        }
+        System.out.println("arrayList   endTime          " + (System.currentTimeMillis() - timeMillis));
+
+        System.out.println("------------------------------宁点的赞，是对我最大的鼓励-------------------------------");
+
+        LinkedList<Integer> linkedList = new LinkedList<>();
+        long startTime = System.currentTimeMillis();
+        System.out.println("linkedList  startTime        " + startTime);
+        for (int i = 0; i < 1000000; i++) {
+            linkedList.add(i);
+        }
+        System.out.println("linkedList  endTime          " + (System.currentTimeMillis() - startTime));
+    }
+
+    public static int[] addTail(int[] arr, int value) {
+
+        for (int i = 0; i < arr.length; i++) {
+
+            if (arr[i] == 0) {
+                arr[i] = value;
+                break;
+            }
+        }
+
+        return arr;
+    }
 }
